@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase/admin";
-import { assertAdminFromRequest } from "@/lib/auth/adminCheck";
+import { assertAdminFromAuthHeader } from "@/lib/auth/adminCheck";
 
 export async function POST(req) {
   try {
-    await assertAdminFromRequest();
+    await assertAdminFromAuthHeader(req);
 
     const { userId, role, is_active } = await req.json();
 
@@ -17,10 +17,7 @@ export async function POST(req) {
     if (typeof is_active === "boolean") patch.is_active = is_active;
 
     const admin = supabaseAdmin();
-    const { error } = await admin
-      .from("profiles")
-      .update(patch)
-      .eq("id", userId);
+    const { error } = await admin.from("profiles").update(patch).eq("id", userId);
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 400 });

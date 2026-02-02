@@ -8,14 +8,14 @@ export async function assertAdminFromAuthHeader(req) {
 
   const admin = supabaseAdmin();
 
-  // Token'dan user'ı bul
+  // Token -> user
   const { data: userData, error: userErr } = await admin.auth.getUser(token);
   if (userErr) throw userErr;
 
   const user = userData?.user;
   if (!user) throw new Error("Not authenticated");
 
-  // profiles'tan admin mi kontrol et
+  // user -> profile -> admin mi?
   const { data: profile, error: pErr } = await admin
     .from("profiles")
     .select("role, is_active")

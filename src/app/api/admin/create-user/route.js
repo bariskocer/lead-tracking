@@ -7,7 +7,7 @@ export async function POST(req) {
     // 1) Bu isteği yapan admin mi?
     await assertAdminFromAuthHeader(req);
 
-    const { email, password, role, display_name } = await req.json();
+    let { email, password, role, display_name } = await req.json();
 
     email = (email || "").trim().toLowerCase();
     role = role === "admin" ? "admin" : "field";
